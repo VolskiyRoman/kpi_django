@@ -1,9 +1,30 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser, Group, Permission
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
+
+
 from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
     is_superuser = models.BooleanField(default=False)
+
+    groups = models.ManyToManyField(
+        Group,
+        verbose_name=_('groups'),
+        blank=True,
+        related_name='myapp_user_groups',
+        related_query_name="user",
+    )
+    user_permissions = models.ManyToManyField(
+        Permission,
+        verbose_name=_('user permissions'),
+        blank=True,
+        related_name='myapp_user_permissions',
+        related_query_name="user",
+        help_text=_('Specific permissions for this user.'),
+    )
 
 
 class Order(models.Model):
@@ -22,9 +43,5 @@ class Review(models.Model):
     reviewer = models.ForeignKey(User, related_name='reviews_as_reviewer', on_delete=models.CASCADE)
 
     def clean(self):
-        if self.rating not in range(1, 6):
-            raise ValidationError('Rating must be from 1 to 5')
-
-    def save(self, *args, **kwargs):
-        self.full_clean()  # Проводимо повну валідацію перед збереженням
-        super().save(*args, **kwargs)
+        if self.rating < 1 or self.rating > 5:
+            raise ValidationError("Рейтинг повинен бути числом від 1 до 5.")
