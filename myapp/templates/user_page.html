@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">User Page</h1>
+        <p>Username: {{ user.username }}</p>
+        <p>Email: {{ user.email }}</p>
+        <p>First name: {{ user.first_name }}</p>
+        <p>Last name: {{ user.last_name }}</p>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editUserModal">Edit User</button>
+        <button type="button" class="btn btn-danger" onclick="deleteUser()">Delete</button>
+    </div>
+    <!-- Edit User Modal -->
+    <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Form for editing user -->
+                    <form id="editUserForm">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="editUsername">Username:</label>
+                            <input type="text" class="form-control" id="editUsername" value="{{ user.username }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="editEmail">Email:</label>
+                            <input type="email" class="form-control" id="editEmail" value="{{ user.email }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="editFirstName">First name:</label>
+                            <input type="text" class="form-control" id="editFirstName" value="{{ user.first_name }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="editLastName">Last name:</label>
+                            <input type="text" class="form-control" id="editLastName" value="{{ user.last_name }}">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="saveChanges()">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+    function saveChanges() {
+        console.log('Save changes button is clicked');
+        let username = document.getElementById("editUsername").value;
+        let email = document.getElementById("editEmail").value;
+        let firstName = document.getElementById("editFirstName").value;
+        let lastName = document.getElementById("editLastName").value;
+        let url = window.location.href;
+        let parts = url.split('/');
+        let user_id = parts[parts.length - 2];
+
+        $.ajax({
+            type: "POST",
+            url: "/user_page/" + user_id + "/",
+            data: {
+                'username': username,
+                'email': email,
+                'first_name': firstName,
+                'last_name': lastName,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function (response) {
+                console.log('Changes saved successfully');
+                $('#editUserModal').modal('hide');
+                location.reload();
+            },
+            error: function (xhr, errmsg, err) {
+                console.log('Error while saving changes');
+            }
+        });
+    }
+
+    function deleteUser() {
+    if (confirm("Ви впевнені, що хочете видалити цього користувача?")) {
+        let url = window.location.href;
+        let parts = url.split('/');
+        let user_id = parts[parts.length - 2];
+
+        $.ajax({
+            type: "POST",
+            url: "/user_page/" + user_id + "/delete/",
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function (response) {
+                console.log('User deleted successfully');
+                window.location.href = "/create_user/";
+            },
+            error: function (xhr, errmsg, err) {
+                console.log('Error while deleting user');
+            }
+        });
+    }
+}
+
+    </script>
+
+</body>
+</html>

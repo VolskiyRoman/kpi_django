@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Details</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Order Details</h1>
+        <p><strong>Title:</strong> {{ order.title }}</p>
+        <p><strong>Description:</strong> {{ order.description }}</p>
+        <p><strong>Customer:</strong> {{ order.customer }}</p>
+        <p><strong>Performer:</strong> {{ order.performer }}</p>
+        <p><strong>Status:</strong> {% if order.completed %}Completed{% else %}Not Completed{% endif %}</p>
+        {% if not order.completed %}
+            <form method="post" action="{% url 'mark_as_completed' order.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Mark as Completed</button>
+            </form>
+        {% endif %}
+    </div>
+</body>
+</html>

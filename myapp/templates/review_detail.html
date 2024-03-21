@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Review Detail</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Review Detail</h1>
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5 class="card-title">Text: {{ review.text }}</h5>
+                <p class="card-text">Rating: {{ review.rating }}</p>
+                <p class="card-text">User: {{ review.user }}</p>
+                <p class="card-text">Reviewer: {{ review.reviewer }}</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
