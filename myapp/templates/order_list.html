@@ -2,19 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Review List</title>
+    <title>Order List</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
     <div class="container">
-        <h1 class="mt-5">Review List</h1>
-        <ul class="list-group mt-3">
-            {% for review in reviews %}
-            <li class="list-group-item">
-                <a href="{% url 'review_detail' review.id %}">{{ review.text }}</a>
-            </li>
-            {% endfor %}
-        </ul>
+        <h1 class="mt-5">Order List</h1>
+        <table class="table mt-3">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Customer</th>
+                    <th>Performer</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>{{ order.title }}</td>
+                    <td>{{ order.description }}</td>
+                    <td>{{ order.customer }}</td>
+                    <td>{{ order.performer }}</td>
+                    <td>
+                        <a href="{% url 'order_detail' order.id %}" class="btn btn-primary btn-sm">
+                            View Details
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </body>
 </html>

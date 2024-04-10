@@ -84,23 +84,6 @@ def mark_order_as_completed(request, order_id):
 
 def create_review(request, user_id):
     if request.method == 'POST':
-        text = request.POST.get('text')
-        rating = request.POST.get('rating')
-        reviewer_id = request.POST.get('reviewer')
-        user_id = request.POST.get('user')
-
-        reviewer = get_object_or_404(User, pk=reviewer_id)
-        user = get_object_or_404(User, pk=user_id)
-
-        review = Review.objects.create(text=text, rating=rating, reviewer=reviewer, user=user)
-        review.save()
-        return HttpResponseRedirect('/some-url/')
-    else:
-        pass
-
-
-def create_review(request, user_id):
-    if request.method == 'POST':
         form = ReviewForm(request.POST)
         if form.is_valid():
             text = form.cleaned_data['text']
